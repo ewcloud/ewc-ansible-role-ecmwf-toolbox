@@ -1,0 +1,72 @@
+---
+- name: Wipe existing conda environment
+  ansible.builtin.file:
+    path: "{{ ecmwf_toolbox_env_path }}"
+    state: absent
+  when: ecmwf_toolbox_env_wipe
+
+- name: Copy conda environment description
+  ansible.builtin.copy:
+    src: "env.yml"
+    dest: /tmp/{{ ecmwf_toolbox_env_name }}.yml
+    mode: "644"
+  register: ecmwf_toolbox_env_updated
+
+- name: Create conda environment
+  become_user: "{{ conda_user | default(root)}}"
+  ansible.builtin.shell: |
+    source /etc/profile.d/conda.sh
+    source /etc/profile.d/mamba.sh
+    export PIP_NO_CACHE_DIR=false
+    mamba env create -f /tmp/{{ ecmwf_toolbox_env_name }}.yml -p {{ ecmwf_toolbox_env_path }} && mamba clean --all -y
+  args:
+    executable: /bin/bash
+    creates: "{{ ecmwf_toolbox_env_path }}"
+  register: ecmwf_toolbox_env_create
+
+- name: Update conda environment
+  become_user: "{{ conda_user | default(root)}}"
+  ansible.builtin.shell: |
+    source /etc/profile.d/conda.sh
+    source /etc/profile.d/mamba.sh
+    export PIP_NO_CACHE_DIR=false
+    mamba env update --prune -f /tmp/{{ ecmwf_toolbox_env_name }}.yml -p {{ ecmwf_toolbox_env_path }} && mamba clean --all -y
+  args:
+    executable: /bin/bash
+  when: not ecmwf_toolbox_env_create.changed and ecmwf_toolbox_env_updated.changed
+
+- name: Ensure Aviso config dir
+  ansible.builtin.file:
+    path: /etc/aviso
+    state: directory
+    mode: "755"
+
+- name: Configure Aviso
+  ansible.builtin.copy:
+    content: |
+      ---
+      notification_engine:
+        type: etcd_rest
+        host: aviso.ecmwf.int
+        port: 443
+        https: true
+      configuration_engine:
+        type: etcd_rest
+        host: aviso.ecmwf.int
+        port: 443
+        https: true
+      schema_parser: ecmwf
+      remote_schema: True
+      auth_type: ecmwf
+    dest: /etc/aviso/config.yaml
+    mode: "644"
+
+- name: Make ipykernel available for Jupyter
+  ansible.builtin.shell: |
+    source /etc/profile.d/conda.sh
+    source /etc/profile.d/mamba.sh
+    mamba run -p {{ ecmwf_toolbox_env_path }} python3 -m ipykernel install --prefix=/usr/local --name="{{ ecmwf_toolbox_env_name }}" --display-name="{{ ecmwf_toolbox_env_name }}" --env PATH "{{ ecmwf_toolbox_env_path }}/bin:\$PATH"
+  args:
+    executable: /bin/bash
+    creates: /usr/local/share/jupyter/kernels/{{ ecmwf_toolbox_env_name }}
+  when: ecmwf_toolbox_create_ipykernel
