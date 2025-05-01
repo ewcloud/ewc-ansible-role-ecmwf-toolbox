@@ -18,7 +18,7 @@
     source /etc/profile.d/conda.sh
     source /etc/profile.d/mamba.sh
     export PIP_NO_CACHE_DIR=false
-    mamba env create -f /tmp/{{ ecmwf_toolbox_env_name }}.yml -p {{ ecmwf_toolbox_env_path }} && mamba clean --all -y
+    mamba env create -y -f /tmp/{{ ecmwf_toolbox_env_name }}.yml -p {{ ecmwf_toolbox_env_path }} && mamba clean --all -y
   args:
     executable: /bin/bash
     creates: "{{ ecmwf_toolbox_env_path }}"
@@ -30,7 +30,7 @@
     source /etc/profile.d/conda.sh
     source /etc/profile.d/mamba.sh
     export PIP_NO_CACHE_DIR=false
-    mamba env update --prune -f /tmp/{{ ecmwf_toolbox_env_name }}.yml -p {{ ecmwf_toolbox_env_path }} && mamba clean --all -y
+    mamba env update --prune -y -f /tmp/{{ ecmwf_toolbox_env_name }}.yml -p {{ ecmwf_toolbox_env_path }} && mamba clean --all -y
   args:
     executable: /bin/bash
   when: not ecmwf_toolbox_env_create.changed and ecmwf_toolbox_env_updated.changed
