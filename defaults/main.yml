@@ -1,5 +1,5 @@
 ---
-ecmwf_toolbox_env_wipe: no
+ecmwf_toolbox_env_wipe: false
 ecmwf_toolbox_env_name: ecmwf-toolbox
 ecmwf_toolbox_env_path: "{{ conda_prefix }}/envs/{{ ecmwf_toolbox_env_name }}"
-ecmwf_toolbox_create_ipykernel: yes
+ecmwf_toolbox_create_ipykernel: true
