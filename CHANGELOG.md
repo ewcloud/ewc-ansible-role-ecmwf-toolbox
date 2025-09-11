@@ -3,6 +3,13 @@
 All notable changes to this project are documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.0.1](https://github.com/ewcloud/ewc-ansible-role-ecmwf-toolbox/compare/1.0.0...1.0.1) (2025-09-11)
+
+
+### Bug Fixes
+
+* bumped ewc-ansible-role-conda version ([dc28a12](https://github.com/ewcloud/ewc-ansible-role-ecmwf-toolbox/commit/dc28a125725d44db98eff07b67befcf9aa6ffde7))
+
 # 1.0.0 (2025-08-21)
 
 
