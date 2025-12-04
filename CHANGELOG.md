@@ -3,6 +3,13 @@
 All notable changes to this project are documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.0.2](https://github.com/ewcloud/ewc-ansible-role-ecmwf-toolbox/compare/1.0.1...1.0.2) (2025-12-04)
+
+
+### Bug Fixes
+
+* Pin python <3.14 due to some wheels not available yet ([cfb80cc](https://github.com/ewcloud/ewc-ansible-role-ecmwf-toolbox/commit/cfb80cc508ebe535955101aa1b4089266fc3c12a))
+
 ## [1.0.1](https://github.com/ewcloud/ewc-ansible-role-ecmwf-toolbox/compare/1.0.0...1.0.1) (2025-09-11)
 
 
